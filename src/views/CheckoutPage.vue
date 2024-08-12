@@ -91,34 +91,31 @@ export default {
         };
         console.log('Order data:', orderData);
         try {
-          const response = await fetch(`https://api.deepspacestore.com/offers/${this.$route.params.offer_code}/create_order`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(orderData)
-          });
-          const result = await response.json();
-          console.log('Response:', result);
+    const response = await fetch(`https://api.deepspacestore.com/offers/${this.$route.params.offer_code}/create_order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderData)
+    });
+    const result = await response.json();
+    console.log('Response:', result);
 
-          if (response.ok) {
-            this.$router.push({ name: 'SuccessPage', query: { orderId: result.orderId } });
-          } else {
-            this.errorMessage = result.error || 'Failed to process your order. Please try again.';
-          }
-        } catch (error) {
-          console.error('Fetch error:', error);
-          this.errorMessage = 'Failed to place order. Please try again later.';
-        } finally {
-          this.loading = false;
-        }
-      } else {
-        this.errorMessage = 'Please fill out all required fields before proceeding.';
-        this.loading = false;
+    if (response.ok) {
+      this.$router.push({ name: 'SuccessPage', query: { orderId: result.orderId } });
+    } else {
+      this.errorMessage = result.error || 'Failed to process your order. Please try again.';
+    }
+    } catch (error) {
+    console.error('Fetch error:', error);
+    this.errorMessage = 'Failed to place order. Please try again later.';
+    } finally {
+    this.loading = false;
+    }
       }
     }
   }
-}
+  }
 </script>
 
 <style scoped>

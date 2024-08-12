@@ -20,7 +20,7 @@ app
 app.mount('#app')
 
 
-if (import.meta.env.MODE === 'development') {
-  const { worker } = require('@/mocks/browser')
-  worker.start()
+if (process.env.MODE === "development"){
+  const { worker } = require("@/mocks/worker");
+  worker.start();
 }

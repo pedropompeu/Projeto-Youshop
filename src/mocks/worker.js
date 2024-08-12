@@ -1,14 +1,15 @@
-import { setupWorker, rest } from 'msw'
+import { setupWorker } from 'msw';
+import { rest } from 'msw/browser';
 
 export const worker = setupWorker(
   rest.post('https://api.deepspacestore.com/offers/:offerCode/create_order', (req, res, ctx) => {
-    const { cpf } = req.body
+    const { cpf } = req.body;
 
     if (cpf === '000.000.000-00') {
       return res(
         ctx.status(400),
         ctx.json({ error: 'Invalid CPF' })
-      )
+      );
     }
 
     return res(
@@ -17,6 +18,6 @@ export const worker = setupWorker(
         orderId: '12345',
         status: 'Success'
       })
-    )
+    );
   })
-)
+);
