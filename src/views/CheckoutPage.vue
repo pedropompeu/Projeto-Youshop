@@ -69,53 +69,63 @@ export default {
     }
   },
   methods: {
-    async finalizeOrder() {
-      this.loading = true; // Ativa o estado de carregamento
-      console.log('Validating forms...');
-      const isPersonalValid = this.$refs.personalForm.validate();
-      const isDeliveryValid = this.$refs.deliveryForm.validate();
-      const isPaymentValid = this.$refs.paymentForm.validate();
+  async finalizeOrder() {
+  this.loading = true; 
 
-      if (isPersonalValid && isDeliveryValid && isPaymentValid) {
-        const orderData = {
-          name: this.$refs.personalForm.name,
-          phone: this.$refs.personalForm.phone,
-          email: this.$refs.personalForm.email,
-          cep: this.$refs.deliveryForm.cep,
-          address: this.$refs.deliveryForm.address,
-          city: this.$refs.deliveryForm.city,
-          state: this.$refs.deliveryForm.state,
-          paymentMethod: this.$refs.paymentForm.selectedPaymentMethod,
-          cpf: this.$refs.paymentForm.cpf,
-          cardNumber: this.$refs.paymentForm.creditCardNumber
-        };
-        console.log('Order data:', orderData);
-        try {
-    const response = await fetch(`https://api.deepspacestore.com/offers/${this.$route.params.offer_code}/create_order`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(orderData)
-    });
-    const result = await response.json();
-    console.log('Response:', result);
-
-    if (response.ok) {
-      this.$router.push({ name: 'SuccessPage', query: { orderId: result.orderId } });
-    } else {
-      this.errorMessage = result.error || 'Failed to process your order. Please try again.';
-    }
-    } catch (error) {
-    console.error('Fetch error:', error);
-    this.errorMessage = 'Failed to place order. Please try again later.';
-    } finally {
+  const offerCode = this.$sore.getters.getOfferCode;
+  if (!offerCode) {
+    this.errorMessage = 'Offer code is missing. Please try again from the offer page.';
     this.loading = false;
-    }
+    return;
+  }
+  console.log('Offer code', offerCode);
+
+  const isPersonalValid = this.$refs.personalForm.validate();
+  const isDeliveryValid = this.$refs.deliveryForm.validate();
+  const isPaymentValid = this.$refs.paymentForm.validate();
+
+  if (isPersonalValid && isDeliveryValid && isPaymentValid) {
+    const orderData = {
+      name: this.$refs.personalForm.name,
+      phone: this.$refs.personalForm.phone,
+      email: this.$refs.personalForm.email,
+      cep: this.$refs.deliveryForm.cep,
+      address: this.$refs.deliveryForm.address,
+      city: this.$refs.deliveryForm.city,
+      state: this.$refs.deliveryForm.state,
+      paymentMethod: this.$refs.paymentForm.selectedPaymentMethod,
+      cpf: this.$refs.paymentForm.cpf,
+      cardNumber: this.$refs.paymentForm.creditCardNumber
+    };
+    console.log('Order data:', orderData);
+    try {
+      const response = await fetch(`https://api.deepspacestore.com/offers/${offerCode}/create_order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
+      const result = await response.json();
+      console.log('Response:', result);
+
+      if (response.ok) {
+        this.$router.push({ name: 'SuccessPage', query: { orderId: result.orderId } });
+      } else {
+        this.errorMessage = result.error || 'Failed to process your order. Please try again.';
       }
+    } catch (error) {
+      console.error('Fetch error:', error);
+      this.errorMessage = 'Failed to place order. Please try again later.';
+    } finally {
+      this.loading = false;
     }
+  } else {
+    this.loading = false;
+  } 
+}
   }
-  }
+}
 </script>
 
 <style scoped>

@@ -5,7 +5,6 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 import './assets/style.css'
-console.log('ERROOOOOOO');
 
 loadFonts()
 

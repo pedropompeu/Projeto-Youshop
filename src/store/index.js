@@ -2,13 +2,21 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-  },
-  getters: {
+    offerCode: ''
   },
   mutations: {
+    SET_OFFER_CODE(state, code) {
+      state.offerCode = code;
+    }
   },
   actions: {
+    updateOfferCode({ commit }, code) {
+      commit('SET_OFFER_CODE', code);
+    }
   },
-  modules: {
+  getters: {
+    getOfferCode(state) {
+      return state.offerCode;
+    }
   }
 })

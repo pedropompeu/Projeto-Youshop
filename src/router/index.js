@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import CheckoutPage from '../views/CheckoutPage.vue'
 import SuccessPage from '../views/SuccessPage.vue'
 
+
 const routes = [
   {
     path: '/',
@@ -9,14 +10,20 @@ const routes = [
     component: CheckoutPage,
   },
   {
-    path: '/checkout',
+    path: '/checkout/:offer_code',
     name: 'CheckoutPage',
-    component: CheckoutPage
+    component: () => import('../views/CheckoutPage.vue')
   },
   {
     path: '/success',
     name: 'SuccessPage',
-    component: SuccessPage
+    component: () => import('../views/SuccessPage.vue')
+
+  },
+  {
+  path: '/success',
+  name: 'SuccessPage',
+  component: SuccessPage,
   }
 ]
 

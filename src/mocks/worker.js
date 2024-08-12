@@ -1,23 +1,17 @@
-import { setupWorker } from 'msw';
-import { rest } from 'msw/browser';
+// src/mocks/handlers.js
+import { rest } from 'msw';
 
-export const worker = setupWorker(
-  rest.post('https://api.deepspacestore.com/offers/:offerCode/create_order', (req, res, ctx) => {
-    const { cpf } = req.body;
-
-    if (cpf === '000.000.000-00') {
-      return res(
-        ctx.status(400),
-        ctx.json({ error: 'Invalid CPF' })
-      );
-    }
+export const handlers = [
+  rest.get('https://api.deepspacestore.com/orders/:orderId', (req, res, ctx) => {
+    const { orderId } = req.params;
 
     return res(
-      ctx.status(200),
       ctx.json({
-        orderId: '12345',
-        status: 'Success'
+        orderId,
+        paymentMethod: 'Credit Card',
+        userName: 'John Doe', 
+        userAddress: '123 Main St, Springfield' //
       })
     );
-  })
-);
+  }),
+];
