@@ -1,32 +1,51 @@
 <template>
   <v-container>
-    <v-row justify="center" class="my-5">
-      <v-col cols="12" md="8">
-        <h1 class="text-center mb-5">Complete Your Purchase</h1>
+    <v-row justify="center" class="my-1">
+      <v-col cols="10" md="4">
+        <h1 class="text-center">Complete Your Purchase</h1>
       </v-col>
     </v-row>
 
-    <v-row>
-      <v-col cols="12" md="6">
-        <PersonalDataForm ref="personalForm" />
+    <v-row class="mb-5">
+      <v-col cols="12" md="6" lg="4">
+        <v-card class="pa-4 elevation-4 rounded-card">
+          <PersonalDataForm ref="personalForm" />
+        </v-card>
       </v-col>
-      <v-col cols="12" md="6">
-        <DeliveryDataForm ref="deliveryForm" />
+      <v-col cols="12" md="6" lg="4">
+        <v-card class="pa-4 elevation-4 rounded-card">
+          <DeliveryDataForm ref="deliveryForm" />
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="6" lg="4">
+        <v-card class="pa-4 elevation-4 rounded-card">
+          <PaymentMethodForm ref="paymentForm" />
+        </v-card>
       </v-col>
     </v-row>
 
-    <v-row>
-      <v-col cols="12" md="6">
-        <PaymentMethodForm ref="paymentForm" />
-      </v-col>
-      <v-col cols="12" md="6" class="d-flex justify-center align-center">
-        <v-btn color="primary" @click="finalizeOrder" class="mt-5">Finalize Order</v-btn>
+    <v-row class="mb-5">
+      <v-col cols="12" class="d-flex justify-center">
+        <v-btn
+          prepend-icon="mdi-cart"
+          :disabled="loading"
+          :loading="loading"
+          class="finalize-btn"
+          color="primary"
+          size="large"
+          block
+          @click="finalizeOrder"
+        >
+          Finalize Order
+        </v-btn>
       </v-col>
     </v-row>
 
-    <v-row v-if="errorMessage">
+    <v-row v-if="errorMessage" class="mt-5">
       <v-col cols="12">
-        <v-alert type="error" dismissible>{{ errorMessage }}</v-alert>
+        <v-alert type="error" dismissible color="red lighten-3" border="top" dark>
+          {{ errorMessage }}
+        </v-alert>
       </v-col>
     </v-row>
   </v-container>
@@ -45,11 +64,13 @@ export default {
   },
   data() {
     return {
-      errorMessage: ''
+      errorMessage: '',
+      loading: false
     }
   },
   methods: {
     async finalizeOrder() {
+      this.loading = true; // Ativa o estado de carregamento
       console.log('Validating forms...');
       const isPersonalValid = this.$refs.personalForm.validate();
       const isDeliveryValid = this.$refs.deliveryForm.validate();
@@ -88,9 +109,12 @@ export default {
         } catch (error) {
           console.error('Fetch error:', error);
           this.errorMessage = 'Failed to place order. Please try again later.';
+        } finally {
+          this.loading = false;
         }
       } else {
         this.errorMessage = 'Please fill out all required fields before proceeding.';
+        this.loading = false;
       }
     }
   }
@@ -100,13 +124,39 @@ export default {
 <style scoped>
 .text-center {
   text-align: center;
+  color: #2c3e50;
 }
 
-.mt-5 {
-  margin-top: 32px;
+.mb-4 {
+  margin-bottom: 24px;
 }
 
 .mb-5 {
   margin-bottom: 32px;
+}
+
+.pa-4 {
+  padding: 24px;
+  background-color: #acb4c4;
+  border-radius: 8px;
+}
+
+.rounded-card {
+  border-radius: 12px;
+}
+
+.elevation-4 {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.finalize-btn {
+  background-color: #007bff;
+  color: white;
+  border-radius: 50px;
+}
+
+.v-alert {
+  font-weight: 500;
+  border-left: 5px solid #e74c3c;
 }
 </style>
