@@ -11,6 +11,7 @@
   "dependencies": {
     "@mdi/font": "5.9.55",
     "@vue/babel-plugin-jsx": "^1.2.2",
+    "axios-mock-adapter": "^2.0.0",
     "core-js": "^3.8.3",
     "roboto-fontface": "*",
     "vue": "^3.4.37",

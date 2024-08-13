@@ -5,22 +5,11 @@ import SuccessPage from '../views/SuccessPage.vue'
 
 const routes = [
   {
-    path: '/',
-    name: 'HomePage',
+    path: '/:offer_code',
+    name: 'CheckoutPage',
     component: CheckoutPage,
   },
-  {
-    path: '/checkout/:offer_code',
-    name: 'CheckoutPage',
-    component: () => import('../views/CheckoutPage.vue')
-  },
-  {
-    path: '/success',
-    name: 'SuccessPage',
-    component: () => import('../views/SuccessPage.vue')
-
-  },
-  {
+   {
   path: '/success',
   name: 'SuccessPage',
   component: SuccessPage,

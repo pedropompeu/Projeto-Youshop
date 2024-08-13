@@ -1,11 +1,11 @@
 <template>
   <v-container>
+    <!-- Seu template permanece o mesmo -->
     <v-row justify="center" class="my-1">
       <v-col cols="10" md="4">
         <h1 class="text-center">Complete Your Purchase</h1>
       </v-col>
     </v-row>
-
     <v-row class="mb-5">
       <v-col cols="12" md="6" lg="4">
         <v-card class="pa-4 elevation-4 rounded-card">
@@ -23,7 +23,6 @@
         </v-card>
       </v-col>
     </v-row>
-
     <v-row class="mb-5">
       <v-col cols="12" class="d-flex justify-center">
         <v-btn
@@ -40,7 +39,6 @@
         </v-btn>
       </v-col>
     </v-row>
-
     <v-row v-if="errorMessage" class="mt-5">
       <v-col cols="12">
         <v-alert type="error" dismissible color="red lighten-3" border="top" dark>
@@ -52,83 +50,88 @@
 </template>
 
 <script>
-import PersonalDataForm from '@/components/PersonalDataForm.vue'
-import DeliveryDataForm from '@/components/DeliveryDataForm.vue'
-import PaymentMethodForm from '@/components/PaymentMethodForm.vue'
+import PersonalDataForm from '@/components/PersonalDataForm.vue';
+import DeliveryDataForm from '@/components/DeliveryDataForm.vue';
+import PaymentMethodForm from '@/components/PaymentMethodForm.vue';
+import axios from 'axios';
 
 export default {
   components: {
     PersonalDataForm,
     DeliveryDataForm,
-    PaymentMethodForm
+    PaymentMethodForm,
   },
   data() {
     return {
       errorMessage: '',
-      loading: false
-    }
+      loading: false,
+    };
   },
   methods: {
-  async finalizeOrder() {
-  this.loading = true; 
+    async finalizeOrder() {
+      this.loading = true;
 
-  const offerCode = this.$sore.getters.getOfferCode;
-  if (!offerCode) {
-    this.errorMessage = 'Offer code is missing. Please try again from the offer page.';
-    this.loading = false;
-    return;
-  }
-  console.log('Offer code', offerCode);
-
-  const isPersonalValid = this.$refs.personalForm.validate();
-  const isDeliveryValid = this.$refs.deliveryForm.validate();
-  const isPaymentValid = this.$refs.paymentForm.validate();
-
-  if (isPersonalValid && isDeliveryValid && isPaymentValid) {
-    const orderData = {
-      name: this.$refs.personalForm.name,
-      phone: this.$refs.personalForm.phone,
-      email: this.$refs.personalForm.email,
-      cep: this.$refs.deliveryForm.cep,
-      address: this.$refs.deliveryForm.address,
-      city: this.$refs.deliveryForm.city,
-      state: this.$refs.deliveryForm.state,
-      paymentMethod: this.$refs.paymentForm.selectedPaymentMethod,
-      cpf: this.$refs.paymentForm.cpf,
-      cardNumber: this.$refs.paymentForm.creditCardNumber
-    };
-    console.log('Order data:', orderData);
-    try {
-      const response = await fetch(`https://api.deepspacestore.com/offers/${offerCode}/create_order`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(orderData)
-      });
-      const result = await response.json();
-      console.log('Response:', result);
-
-      if (response.ok) {
-        this.$router.push({ name: 'SuccessPage', query: { orderId: result.orderId } });
-      } else {
-        this.errorMessage = result.error || 'Failed to process your order. Please try again.';
+      // Simulando obter o offerCode do store ou rota
+      const offerCode = 'enterprise'; // Substitua isso pelo código correto
+      if (!offerCode) {
+        this.errorMessage = 'Offer code is missing. Please try again from the offer page.';
+        this.loading = false;
+        return;
       }
-    } catch (error) {
-      console.error('Fetch error:', error);
-      this.errorMessage = 'Failed to place order. Please try again later.';
-    } finally {
-      this.loading = false;
-    }
-  } else {
-    this.loading = false;
-  } 
-}
-  }
-}
+      console.log('Offer code', offerCode);
+
+      const isPersonalValid = this.$refs.personalForm.validate();
+      const isDeliveryValid = this.$refs.deliveryForm.validate();
+      const isPaymentValid = this.$refs.paymentForm.validate();
+
+      if (isPersonalValid && isDeliveryValid && isPaymentValid) {
+        const orderData = {
+          name: this.$refs.personalForm.name,
+          phone: this.$refs.personalForm.phone,
+          email: this.$refs.personalForm.email,
+          cep: this.$refs.deliveryForm.cep,
+          address: this.$refs.deliveryForm.address,
+          city: this.$refs.deliveryForm.city,
+          state: this.$refs.deliveryForm.state,
+          paymentMethod: this.$refs.paymentForm.selectedPaymentMethod,
+          cpf: this.$refs.paymentForm.cpf,
+          cardNumber: this.$refs.paymentForm.creditCardNumber,
+        };
+        console.log('Order data:', orderData);
+        try {
+          const response = await axios.post(`https://api.deepspacestore.com/offers/${offerCode}/create_order`, orderData);
+          const result = response.data;
+          console.log('Response:', result);
+
+          if (response.status === 200) {
+            this.$router.push({ 
+              name: 'SuccessPage', 
+              query: { 
+                orderId: result.orderId,
+                name: orderData.name,
+                address: `${orderData.address}, ${orderData.city} - ${orderData.state}`,
+                paymentMethod: orderData.paymentMethod,
+              }
+            });
+          } else {
+            this.errorMessage = result.error || 'Failed to process your order. Please try again.';
+          }
+        } catch (error) {
+          console.error('Axios error:', error);
+          this.errorMessage = 'Failed to place order. Please try again later.';
+        } finally {
+          this.loading = false;
+        }
+      } else {
+        this.loading = false;
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
+/* Estilos permanecem os mesmos */
 .text-center {
   text-align: center;
   color: #2c3e50;

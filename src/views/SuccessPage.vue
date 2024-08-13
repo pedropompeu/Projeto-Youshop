@@ -85,36 +85,14 @@ export default {
   data() {
     return {
       orderId: this.$route.query.orderId,
-      paymentMethod: '',
+      paymentMethod: this.$route.query.paymentMethod,
       userData: {
-        name: '',
-        address: '',
+        name: this.$route.query.name,
+        address: this.$route.query.address,
       },
-      rules: {
-        required: value => !!value || 'Required.',
-        validCep: value => {
-          const validCep = /^\d{5}-?\d{3}$/.test(value);
-          return validCep || 'Invalid CEP';
-        }
-      }
-    }
+    };
   },
-  created() {
-  
-    fetch(`https://api.deepspacestore.com/orders/${this.orderId}`)
-      .then(res => res.json())
-      .then(data => {
-        this.paymentMethod = data.paymentMethod;
-        this.userData = {
-          name: data.name,
-          address: data.address
-        };
-      })
-      .catch(err => {
-        console.error("Error fetching order details:", err);
-      });
-  }
-}
+};
 </script>
 
 <style scoped>

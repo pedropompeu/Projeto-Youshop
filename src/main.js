@@ -1,3 +1,4 @@
+import './mocks/axiosMock'
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -14,12 +15,5 @@ app
   .use(router)
   .use(store)
   .use(vuetify)
+  .mount('#app')
 
-
-app.mount('#app')
-
-
-if (process.env.MODE === "development"){
-  const { worker } = require("@/mocks/worker");
-  worker.start();
-}
