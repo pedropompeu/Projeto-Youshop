@@ -4,11 +4,13 @@ import SuccessPage from '../views/SuccessPage.vue'
 
 
 const routes = [
+  
   {
-    path: '/:offer_code',
+    path: '/',
     name: 'CheckoutPage',
     component: CheckoutPage,
-  },
+  }
+  ,
    {
   path: '/success',
   name: 'SuccessPage',
