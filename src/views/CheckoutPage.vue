@@ -1,11 +1,11 @@
 <template>
   <v-container>
-    <!-- Seu template permanece o mesmo -->
     <v-row justify="center" class="my-1">
       <v-col cols="10" md="4">
         <h1 class="text-center">Complete Your Purchase</h1>
       </v-col>
     </v-row>
+
     <v-row class="mb-5">
       <v-col cols="12" md="6" lg="4">
         <v-card class="pa-4 elevation-4 rounded-card">
@@ -23,6 +23,7 @@
         </v-card>
       </v-col>
     </v-row>
+
     <v-row class="mb-5">
       <v-col cols="12" class="d-flex justify-center">
         <v-btn
@@ -39,6 +40,7 @@
         </v-btn>
       </v-col>
     </v-row>
+
     <v-row v-if="errorMessage" class="mt-5">
       <v-col cols="12">
         <v-alert type="error" dismissible color="red lighten-3" border="top" dark>
@@ -70,21 +72,37 @@ export default {
   methods: {
     async finalizeOrder() {
       this.loading = true;
+      this.errorMessage = '';
 
-      // Simulando obter o offerCode do store ou rota
-      const offerCode = 'enterprise'; // Substitua isso pelo código correto
-      if (!offerCode) {
-        this.errorMessage = 'Offer code is missing. Please try again from the offer page.';
-        this.loading = false;
-        return;
+      // Validar os formulários e verificar se algum é inválido
+      const isPersonalValid = await this.$refs.personalForm.validate();
+      console.log('Personal Data Valid:', isPersonalValid);
+      const isDeliveryValid = await this.$refs.deliveryForm.validate();
+      console.log('Delivery Data Valid:', isDeliveryValid);
+      const isPaymentValid = await this.$refs.paymentForm.validate();
+      console.log('Payment Method Valid:', isPaymentValid);
+
+      // Se algum formulário não for válido, mostrar a mensagem de erro correspondente
+      if (!isPersonalValid) {
+        this.errorMessage = 'Please fill in all required fields in the Personal Data form.';
+        this.scrollToForm('personalForm');
+      } else if (!isDeliveryValid) {
+        this.errorMessage = 'Please fill in all required fields in the Delivery Data form.';
+        this.scrollToForm('deliveryForm');
+      } else if (!isPaymentValid) {
+        this.errorMessage = 'Please fill in all required fields in the Payment Method form.';
+        this.scrollToForm('paymentForm');
       }
-      console.log('Offer code', offerCode);
 
-      const isPersonalValid = this.$refs.personalForm.validate();
-      const isDeliveryValid = this.$refs.deliveryForm.validate();
-      const isPaymentValid = this.$refs.paymentForm.validate();
-
+      // Se todos os formulários forem válidos, proceder com a finalização do pedido
       if (isPersonalValid && isDeliveryValid && isPaymentValid) {
+        const offerCode = 'enterprise';
+        if (!offerCode) {
+          this.errorMessage = 'Offer code is missing. Please try again from the offer page.';
+          this.loading = false;
+          return;
+        }
+
         const orderData = {
           name: this.$refs.personalForm.name,
           phone: this.$refs.personalForm.phone,
@@ -97,33 +115,41 @@ export default {
           cpf: this.$refs.paymentForm.cpf,
           cardNumber: this.$refs.paymentForm.creditCardNumber,
         };
-        console.log('Order data:', orderData);
+
         try {
           const response = await axios.post(`https://api.deepspacestore.com/offers/${offerCode}/create_order`, orderData);
           const result = response.data;
-          console.log('Response:', result);
 
           if (response.status === 200) {
-            this.$router.push({ 
-              name: 'SuccessPage', 
-              query: { 
+            this.$router.push({
+              name: 'SuccessPage',
+              query: {
                 orderId: result.orderId,
                 name: orderData.name,
-                address: `${orderData.address}, ${orderData.city} - ${orderData.state}`,
+                cpf: orderData.cpf,
+                phone: orderData.phone,
+                email: orderData.email,
+                address: `${orderData.address}, ${orderData.city} / ${orderData.state}`,
+                cep: orderData.cep,
                 paymentMethod: orderData.paymentMethod,
-              }
+              },
             });
           } else {
             this.errorMessage = result.error || 'Failed to process your order. Please try again.';
           }
         } catch (error) {
-          console.error('Axios error:', error);
           this.errorMessage = 'Failed to place order. Please try again later.';
         } finally {
           this.loading = false;
         }
       } else {
         this.loading = false;
+      }
+    },
+    scrollToForm(formRef) {
+      const form = this.$refs[formRef];
+      if (form && form.$el) {
+        form.$el.scrollIntoView({ behavior: 'smooth' });
       }
     },
   },

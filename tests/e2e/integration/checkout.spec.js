@@ -5,7 +5,7 @@ describe('Checkout Flow', () => {
       cy.get('input[label="Phone"]').type('1234567890')
       cy.get('input[label="Email"]').type('john.doe@example.com')
       cy.get('input[label="CEP"]').type('12345-678').blur()
-      cy.wait(1000) // Esperar a API de CEP retornar
+      cy.wait(1000) 
       cy.get('select').select('Credit Card')
       cy.get('input[label="CPF"]').type('111.444.777-35')
       cy.get('input[label="Card Number"]').type('4111111111111111')

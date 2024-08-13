@@ -13,7 +13,10 @@ mock.onGet(/\/orders\/\d+/).reply(200, {
   orderId: '12345',
   paymentMethod: 'Credit Card',
   name: 'John Doe',
+  email: 'email@email.com',
+  cpf: "xxx.xxx.xxx-xx",
   address: '123 Main St, Springfield - IL',
+  cep: "98998772",
 });
 
 export default mock;
