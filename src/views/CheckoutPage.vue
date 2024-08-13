@@ -74,7 +74,7 @@ export default {
       this.loading = true;
       this.errorMessage = '';
 
-      // Validar os formulários e verificar se algum é inválido
+
       const isPersonalValid = await this.$refs.personalForm.validate();
       console.log('Personal Data Valid:', isPersonalValid);
       const isDeliveryValid = await this.$refs.deliveryForm.validate();
@@ -82,7 +82,7 @@ export default {
       const isPaymentValid = await this.$refs.paymentForm.validate();
       console.log('Payment Method Valid:', isPaymentValid);
 
-      // Se algum formulário não for válido, mostrar a mensagem de erro correspondente
+
       if (!isPersonalValid) {
         this.errorMessage = 'Please fill in all required fields in the Personal Data form.';
         this.scrollToForm('personalForm');
@@ -94,7 +94,7 @@ export default {
         this.scrollToForm('paymentForm');
       }
 
-      // Se todos os formulários forem válidos, proceder com a finalização do pedido
+  
       if (isPersonalValid && isDeliveryValid && isPaymentValid) {
         const offerCode = 'enterprise';
         if (!offerCode) {
@@ -157,7 +157,6 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos permanecem os mesmos */
 .text-center {
   text-align: center;
   color: #2c3e50;
