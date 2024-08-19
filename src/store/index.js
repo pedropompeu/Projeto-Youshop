@@ -1,22 +1,20 @@
-import { createStore } from 'vuex'
+import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    offerCode: ''
+    selectedProduct: null,
   },
   mutations: {
-    SET_OFFER_CODE(state, code) {
-      state.offerCode = code;
-    }
+    setProduct(state, product) {
+      state.selectedProduct = product;
+    },
   },
   actions: {
-    updateOfferCode({ commit }, code) {
-      commit('SET_OFFER_CODE', code);
-    }
+    setProduct({ commit }, product) {
+      commit('setProduct', product);
+    },
   },
   getters: {
-    getOfferCode(state) {
-      return state.offerCode;
-    }
-  }
-})
+    selectedProduct: (state) => state.selectedProduct,
+  },
+});

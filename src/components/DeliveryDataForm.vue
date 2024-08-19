@@ -1,5 +1,5 @@
 <template>
-  <v-card class="pa-5 elevation-3">
+  <v-card class="form-card" elevation="4">
     <v-card-title class="text-h6 grey--text text--darken-3">Address Information</v-card-title>
     <v-card-text>
       <v-form v-model="valid" ref="deliveryForm">
@@ -15,6 +15,12 @@
           :rules="[rules.required]"
           label="Address"
           readonly
+          required
+        ></v-text-field>
+        <v-text-field
+          v-model="number"
+          :rules="[rules.required]"
+          label="Number"
           required
         ></v-text-field>
         <v-text-field
@@ -43,45 +49,47 @@ export default {
       valid: false,
       cep: '',
       address: '',
+      number: '',
       city: '',
       state: '',
       rules: {
         required: value => !!value || 'Required.',
-        validCep: value => /^\d{5}-?\d{3}$/.test(value) || 'CEP must be valid.'
-      }
-    }
+        validCep: value => /^\d{5}-?\d{3}$/.test(value) || 'CEP must be valid.',
+      },
+    };
   },
   methods: {
     async fetchAddress() {
       if (this.rules.validCep(this.cep) === true) {
-        const response = await fetch(`https://viacep.com.br/ws/${this.cep}/json/`)
-        const data = await response.json()
-        this.address = data.logradouro
-        this.city = data.localidade
-        this.state = data.uf
+        const response = await fetch(`https://viacep.com.br/ws/${this.cep}/json/`);
+        const data = await response.json();
+        this.address = data.logradouro;
+        this.city = data.localidade;
+        this.state = data.uf;
       }
     },
     validate() {
-      return this.$refs.deliveryForm.validate()
-    }
-  }
-}
+      return this.$refs.deliveryForm.validate();
+    },
+  },
+};
 </script>
 
 <style scoped>
-.pa-5 {
-  padding: 24px;
-}
-
-.elevation-3 {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.form-card {
+  border-radius: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.37);
 }
 
 .text-h6 {
-  font-weight: 500;
+  font-weight: 700;
+  color: #333333;
+  text-align: center;
 }
 
-.grey--text {
-  color: #616161 !important;
+.grey--text.text--darken-3 {
+  color: #666666;
 }
 </style>

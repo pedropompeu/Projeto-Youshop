@@ -94,13 +94,13 @@
                 >
                   <v-icon>mdi-printer</v-icon>
                   <p>Payment Method: Boleto</p>
-                  <a :href="require('@/assets/BoletoFaturaGR.png')"
+                  <a :href="require('@/assets/images/BoletoFaturaGR.png')"
                   download="BoletoFaturaGR.png"
                   target="_blank"
                   >
                 
                   <v-img
-                    src="@/assets/BoletoFaturaGR.png"
+                    src="@/assets/images/BoletoFaturaGR.png"
                     alt="Boleto"
                     class="mt-2 mx-8"
                     max-width="250"
@@ -116,7 +116,7 @@
               >
                 <p><v-icon>mdi-qrcode</v-icon>Payment Method: Pix</p>
                 <v-img
-                  src="@/assets/QRCode_Facil.png"
+                  src="@/assets/images/QRCode_Facil.png"
                 alt="QR Code"
                 class="mt-2 mx-8" 
                 max-width="250px"
